@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -15,10 +16,12 @@ const Challenge2Page = () => {
   }, []); // Run this effect only once on component mount
 
   const handleRating = (rating) => {
-    // Update state and localStorage on client side
-    setActiveRating(rating);
-    localStorage.setItem("rating", rating);
-    setSubmitted(true);
+    if (!submitted) {
+      // Update state and localStorage on client side
+      setActiveRating(rating);
+      localStorage.setItem("rating", rating);
+      setSubmitted(true);
+    }
   };
 
   return (
@@ -39,7 +42,7 @@ const Challenge2Page = () => {
             <div className="flex items-center justify-between mt-5">
               {RATINGS.map((rating) => (
                 <span
-                  onClick={() => handleRating(rating)} // Pass rating value here
+                  onClick={() => setActiveRating(rating)} // Pass rating value here
                   key={rating}
                   className={`w-12 h-12 rounded-full  text-slate-300  cursor-pointer flex justify-center items-center transition-all hover:transition-all ${
                     rating === activeRating
