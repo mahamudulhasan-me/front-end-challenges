@@ -1,19 +1,24 @@
-"use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const RATINGS = [1, 2, 3, 4, 5];
 const Challenge2Page = () => {
-  const [activeRating, setActiveRating] = useState(
-    localStorage.getItem("rating")
-  );
+  const [activeRating, setActiveRating] = useState(0); // Set initial value to 0
   const [submitted, setSubmitted] = useState(false);
 
-  const handleRating = () => {
-    if (activeRating) {
-      localStorage.setItem("rating", activeRating);
-      setSubmitted(true);
+  useEffect(() => {
+    // Access localStorage only on client side
+    const storedRating = localStorage.getItem("rating");
+    if (storedRating) {
+      setActiveRating(parseInt(storedRating)); // Convert to integer
     }
+  }, []); // Run this effect only once on component mount
+
+  const handleRating = (rating) => {
+    // Update state and localStorage on client side
+    setActiveRating(rating);
+    localStorage.setItem("rating", rating);
+    setSubmitted(true);
   };
 
   return (
@@ -34,7 +39,7 @@ const Challenge2Page = () => {
             <div className="flex items-center justify-between mt-5">
               {RATINGS.map((rating) => (
                 <span
-                  onClick={() => setActiveRating(rating)} // Pass rating value here
+                  onClick={() => handleRating(rating)} // Pass rating value here
                   key={rating}
                   className={`w-12 h-12 rounded-full  text-slate-300  cursor-pointer flex justify-center items-center transition-all hover:transition-all ${
                     rating === activeRating
@@ -47,7 +52,7 @@ const Challenge2Page = () => {
               ))}
             </div>
             <button
-              onClick={handleRating}
+              onClick={() => handleRating(activeRating)} // Pass activeRating here
               className="w-full h-12 bg-orange-500 text-white rounded-2xl mt-5 font-semibold hover:text-orange-500 hover:bg-white transition-all hover:transition-all"
             >
               Submit
